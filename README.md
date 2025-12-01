@@ -2,6 +2,65 @@
 
 This MCP server provides Claude Code with access to your macOS Calendar events (including synced Google Calendar events).
 
+## Installation
+
+### Prerequisites
+
+- macOS (required for EventKit framework)
+- Python 3.8 or higher
+- Claude Code CLI
+
+### Step 1: Install Python Dependencies
+
+```bash
+cd calendar-server
+source ~/.zshrc && python -m pip install mcp pyobjc-framework-EventKit
+```
+
+### Step 2: Configure Claude Code
+
+Add the server to your Claude Code MCP configuration at `~/.claude/mcp.json`:
+
+```json
+{
+  "mcpServers": {
+    "calendar": {
+      "command": "python",
+      "args": [
+        "/Users/YOUR_USERNAME/PATH_TO_FOLDER/calendar-server/server.py"
+      ]
+    }
+  }
+}
+```
+
+**Important**: Use the full absolute path to the server.py file.
+
+### Step 3: Grant Calendar Permissions
+
+On first use, macOS will prompt you to grant Calendar access. Click **Allow** when prompted.
+
+You can verify or change permissions later at:
+**System Settings → Privacy & Security → Calendar**
+
+### Step 4: Restart Claude Code
+
+After adding the server configuration, restart Claude Code for the changes to take effect.
+
+### Step 5: Verify Installation
+
+Test that the server is working:
+
+```bash
+cd calendar-server
+source ~/.zshrc && python test.py
+```
+
+Or check the MCP server list in Claude Code:
+```bash
+claude mcp list
+```
+
 ## Features
 
 - ✅ Access all calendar events across all calendars
@@ -14,13 +73,6 @@ This MCP server provides Claude Code with access to your macOS Calendar events (
 - ✅ All-day event detection
 - ✅ Date range filtering
 - ✅ Calendar-specific filtering
-
-## Permissions
-
-On first use, macOS will prompt you to grant Calendar access to Terminal. This is required for the server to work.
-
-You can also manually manage permissions at:
-**System Settings → Privacy & Security → Calendar**
 
 ## Available Tools
 
