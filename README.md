@@ -10,16 +10,51 @@ This MCP server provides Claude Code with access to your macOS Calendar events (
 - Python 3.8 or higher
 - Claude Code CLI
 
-### Step 1: Install Python Dependencies
+### Option 1: Install from PyPI (Recommended)
+
+The easiest way to install:
 
 ```bash
-cd calendar-server
-source ~/.zshrc && python -m pip install mcp pyobjc-framework-EventKit
+source ~/.zshrc && pip install mac-calendar-mcp
 ```
 
-### Step 2: Configure Claude Code
+Then configure Claude Code by adding to `~/.claude/mcp.json`:
 
-Add the server to your Claude Code MCP configuration at `~/.claude/mcp.json`:
+```json
+{
+  "mcpServers": {
+    "calendar": {
+      "command": "uvx",
+      "args": ["mac-calendar-mcp"]
+    }
+  }
+}
+```
+
+Or use Python directly:
+
+```json
+{
+  "mcpServers": {
+    "calendar": {
+      "command": "python",
+      "args": ["-m", "mac_calendar_mcp.server"]
+    }
+  }
+}
+```
+
+### Option 2: Install from Source
+
+For development or if you want to modify the code:
+
+```bash
+git clone https://github.com/yourusername/mac-calendar-mcp.git
+cd mac-calendar-mcp
+source ~/.zshrc && pip install -e .
+```
+
+Then configure Claude Code at `~/.claude/mcp.json`:
 
 ```json
 {
@@ -27,7 +62,7 @@ Add the server to your Claude Code MCP configuration at `~/.claude/mcp.json`:
     "calendar": {
       "command": "python",
       "args": [
-        "/Users/YOUR_USERNAME/PATH_TO_FOLDER/calendar-server/server.py"
+        "/Users/YOUR_USERNAME/PATH_TO_FOLDER/mac-calendar-mcp/src/mac_calendar_mcp/server.py"
       ]
     }
   }
@@ -36,29 +71,29 @@ Add the server to your Claude Code MCP configuration at `~/.claude/mcp.json`:
 
 **Important**: Use the full absolute path to the server.py file.
 
-### Step 3: Grant Calendar Permissions
+### Grant Calendar Permissions
 
 On first use, macOS will prompt you to grant Calendar access. Click **Allow** when prompted.
 
 You can verify or change permissions later at:
 **System Settings → Privacy & Security → Calendar**
 
-### Step 4: Restart Claude Code
+### Restart Claude Code
 
 After adding the server configuration, restart Claude Code for the changes to take effect.
 
-### Step 5: Verify Installation
+### Verify Installation
 
-Test that the server is working:
-
-```bash
-cd calendar-server
-source ~/.zshrc && python test.py
-```
-
-Or check the MCP server list in Claude Code:
+Check the MCP server list in Claude Code:
 ```bash
 claude mcp list
+```
+
+Or test the server directly (if installed from source):
+
+```bash
+cd mac-calendar-mcp
+source ~/.zshrc && python test.py
 ```
 
 ## Features
@@ -116,9 +151,9 @@ Now that this is set up, you can ask Claude to:
 
 ## Testing
 
-You can test the server directly:
+You can test the server directly (if installed from source):
 ```bash
-cd calendar-server
+cd mac-calendar-mcp
 source ~/.zshrc && python test.py
 ```
 

@@ -1,0 +1,203 @@
+{
+  "scenarios": [
+    {
+      "id": "scenario_001",
+      "description": "Basic event retrieval with date range",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-25"
+      },
+      "expected_fields": ["title", "calendar", "start_date_str", "end_date_str", "all_day", "notes", "organizer", "user_rsvp_status", "attendee_count"]
+    },
+    {
+      "id": "scenario_002",
+      "description": "Default date range (today + 7 days)",
+      "tool": "get_calendar_events",
+      "arguments": {},
+      "expected_fields": ["title", "calendar", "start_date_str", "end_date_str"]
+    },
+    {
+      "id": "scenario_003",
+      "description": "Filter by single calendar",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-25",
+        "calendar_names": ["Work"]
+      },
+      "expected_calendar": "Work"
+    },
+    {
+      "id": "scenario_004",
+      "description": "Filter by multiple calendars",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-25",
+        "calendar_names": ["Work", "Personal"]
+      },
+      "expected_calendars": ["Work", "Personal"]
+    },
+    {
+      "id": "scenario_005",
+      "description": "Custom days_ahead parameter",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "days_ahead": 14
+      },
+      "expected_date_range_days": 14
+    },
+    {
+      "id": "scenario_006",
+      "description": "Single day query (same start and end)",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-15"
+      },
+      "expected_single_day": true
+    },
+    {
+      "id": "scenario_007",
+      "description": "ISO datetime with time component",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15T10:00:00",
+        "end_date": "2024-12-15T11:00:00"
+      },
+      "expected_time_filtering": true
+    },
+    {
+      "id": "scenario_008",
+      "description": "List all calendars",
+      "tool": "list_calendars",
+      "arguments": {},
+      "expected_fields": ["title", "type", "color", "source"]
+    },
+    {
+      "id": "scenario_009",
+      "description": "Event with RSVP status - Accepted",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-15"
+      },
+      "expected_rsvp_statuses": ["Accepted", "Declined", "Tentative", "Pending", "Unknown", "Organizer"]
+    },
+    {
+      "id": "scenario_010",
+      "description": "Event with no attendees (Organizer fallback)",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-20",
+        "end_date": "2024-12-20"
+      },
+      "expected_organizer_status": true
+    },
+    {
+      "id": "scenario_011",
+      "description": "All-day event detection",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-31",
+        "end_date": "2024-12-31"
+      },
+      "expected_all_day_events": true
+    },
+    {
+      "id": "scenario_012",
+      "description": "Attendee count extraction",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-15"
+      },
+      "validate_attendee_count": true
+    },
+    {
+      "id": "scenario_013",
+      "description": "Event with notes/description",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-25"
+      },
+      "validate_notes_field": true
+    },
+    {
+      "id": "scenario_014",
+      "description": "Event with organizer",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-15"
+      },
+      "validate_organizer_field": true
+    },
+    {
+      "id": "scenario_015",
+      "description": "Empty calendar filter",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-25",
+        "calendar_names": []
+      },
+      "expected_empty_result": true
+    },
+    {
+      "id": "scenario_016",
+      "description": "Nonexistent calendar filter",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-25",
+        "calendar_names": ["NonexistentCalendar"]
+      },
+      "expected_empty_result": true
+    },
+    {
+      "id": "scenario_017",
+      "description": "Date range with no events",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2025-06-01",
+        "end_date": "2025-06-01"
+      },
+      "expected_empty_result": true
+    },
+    {
+      "id": "scenario_018",
+      "description": "ISO format date/time parsing",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15T00:00:00",
+        "end_date": "2024-12-15T23:59:59"
+      },
+      "validate_iso_format": true
+    },
+    {
+      "id": "scenario_019",
+      "description": "Multiple events on same day",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-15"
+      },
+      "validate_multiple_events": true
+    },
+    {
+      "id": "scenario_020",
+      "description": "End-of-day boundary handling",
+      "tool": "get_calendar_events",
+      "arguments": {
+        "start_date": "2024-12-15",
+        "end_date": "2024-12-15"
+      },
+      "validate_end_of_day": true,
+      "expected_end_time": "23:59:59.999999"
+    }
+  ]
+}

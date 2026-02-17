@@ -1,0 +1,5 @@
+{
+  "note": "This file will be populated by running the Python tests and capturing outputs",
+  "format": "scenario_id -> expected_output",
+  "outputs": {}
+}
