@@ -4,13 +4,13 @@ build-backend = "hatchling.build"
 
 [project]
 name = "mac-calendar-mcp"
-version = "0.1.0"
+version = "0.2.0"
 description = "MCP server providing access to macOS Calendar events (including synced Google Calendar)"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "Your Name", email = "your.email@example.com"}
+    {name = "Shir Goldberg", email = "contact@shirgoldberg.com"}
 ]
 keywords = ["mcp", "calendar", "macos", "eventkit", "google-calendar"]
 classifiers = [
@@ -30,6 +30,7 @@ classifiers = [
 dependencies = [
     "mcp>=0.9.0",
     "pyobjc-framework-EventKit>=10.0",
+    "pytz>=2024.1",
 ]
 
 [project.optional-dependencies]

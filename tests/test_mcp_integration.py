@@ -12,7 +12,7 @@ class TestMCPIntegration:
         from mac_calendar_mcp.server import list_tools
         tools = await list_tools()
         assert isinstance(tools, list)
-        assert len(tools) == 2
+        assert len(tools) == 9  # Updated: now includes 9 tools (get_calendar_events, get_events, list_calendars, get_reminders, search, get_today_summary, get_current_time, convert_time, list_timezones)
 
     async def test_get_calendar_events_tool_schema(self):
         """Test get_calendar_events tool has correct schema"""

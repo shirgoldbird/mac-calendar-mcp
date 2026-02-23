@@ -48,8 +48,8 @@ class TestPermissions:
 
         mock_event_store.set_authorized(False)
 
-        # Patch EKEventStore in the EventKit module
-        monkeypatch.setattr('EventKit.EKEventStore', MockEKEventStore)
+        # Patch EKEventStore in the server module (not EventKit module)
+        monkeypatch.setattr('mac_calendar_mcp.server.EKEventStore', MockEKEventStore)
 
         server = CalendarServer()
         server.event_store = mock_event_store
@@ -97,8 +97,8 @@ class TestPermissions:
 
         mock_event_store.set_authorized(False)
 
-        # Patch EKEventStore in the EventKit module
-        monkeypatch.setattr('EventKit.EKEventStore', MockEKEventStore)
+        # Patch EKEventStore in the server module (not EventKit module)
+        monkeypatch.setattr('mac_calendar_mcp.server.EKEventStore', MockEKEventStore)
 
         server = CalendarServer()
         server.event_store = mock_event_store

@@ -80,6 +80,81 @@ class MockEKCalendar:
         return MockSource(self._source_title)
 
 
+class MockEKDateComponents:
+    """Mock NSDateComponents for testing."""
+
+    def __init__(self, year: int, month: int, day: int, hour: int = 0, minute: int = 0, second: int = 0):
+        self._year = year
+        self._month = month
+        self._day = day
+        self._hour = hour
+        self._minute = minute
+        self._second = second
+
+    def year(self) -> int:
+        return self._year
+
+    def month(self) -> int:
+        return self._month
+
+    def day(self) -> int:
+        return self._day
+
+    def hour(self) -> int:
+        return self._hour
+
+    def minute(self) -> int:
+        return self._minute
+
+    def second(self) -> int:
+        return self._second
+
+
+class MockEKReminder:
+    """Mock EKReminder for testing."""
+
+    def __init__(
+        self,
+        title: str,
+        calendar,
+        due_date_components: Optional[MockEKDateComponents] = None,
+        is_completed: bool = False,
+        completion_date: Optional[datetime] = None,
+        priority: int = 0,
+        notes: str = "",
+    ):
+        self._title = title
+        self._calendar = calendar
+        self._due_date_components = due_date_components
+        self._is_completed = is_completed
+        self._completion_date = (
+            MockNSDate(completion_date.timestamp()) if completion_date else None
+        )
+        self._priority = priority
+        self._notes = notes
+
+    def title(self) -> str:
+        return self._title
+
+    def calendar(self):
+        return self._calendar
+
+    def dueDateComponents(self):
+        return self._due_date_components
+
+    def isCompleted(self) -> bool:
+        return self._is_completed
+
+    def completionDate(self):
+        return self._completion_date
+
+    def priority(self) -> int:
+        return self._priority
+
+    def notes(self) -> str:
+        return self._notes
+
+
 class MockEKEvent:
     """Mock EKEvent for testing."""
 
@@ -92,7 +167,10 @@ class MockEKEvent:
         notes: str = "",
         organizer_name: str = "",
         attendees: Optional[List] = None,
-        is_all_day: bool = False
+        is_all_day: bool = False,
+        location: str = "",
+        url: Optional[str] = None,
+        availability: int = 0  # 0 = busy by default
     ):
         self._title = title
         self._start = MockNSDate(start.timestamp())
@@ -102,6 +180,9 @@ class MockEKEvent:
         self._organizer_name = organizer_name
         self._attendees = attendees or []
         self._is_all_day = is_all_day
+        self._location = location
+        self._url = url
+        self._availability = availability
 
     def title(self) -> str:
         return self._title
@@ -137,6 +218,15 @@ class MockEKEvent:
     def isAllDay(self) -> bool:
         return self._is_all_day
 
+    def location(self) -> Optional[str]:
+        return self._location if self._location else None
+
+    def URL(self) -> Optional[str]:
+        return self._url
+
+    def availability(self) -> int:
+        return self._availability
+
 
 class MockEKEventStore:
     """Mock EKEventStore for testing."""
@@ -147,6 +237,7 @@ class MockEKEventStore:
     def __init__(self):
         self._calendars = []
         self._events = []
+        self._reminders = []
         self._authorized = False
 
     @classmethod
@@ -181,6 +272,10 @@ class MockEKEventStore:
     def add_event(self, event):
         """Add a mock event."""
         self._events.append(event)
+
+    def add_reminder(self, reminder):
+        """Add a mock reminder."""
+        self._reminders.append(reminder)
 
     def calendarsForEntityType_(self, entity_type: int):
         """Return mock calendars."""
@@ -227,9 +322,32 @@ class MockEKEventStore:
         # Call completion handler immediately with authorized status
         completion_handler(self._authorized, None)
 
+    def predicateForRemindersInCalendars_(self, calendars):
+        """Return a mock predicate for reminders."""
+        class MockReminderPredicate:
+            def __init__(self, cals):
+                self.calendars = cals
+
+        return MockReminderPredicate(calendars)
+
+    def fetchRemindersMatchingPredicate_completion_(self, predicate, completion_handler):
+        """Fetch reminders matching predicate."""
+        calendar_titles = {cal.title() for cal in predicate.calendars}
+
+        # Filter reminders by calendar
+        matching = []
+        for reminder in self._reminders:
+            reminder_calendar = reminder.calendar().title()
+            if reminder_calendar in calendar_titles:
+                matching.append(reminder)
+
+        # Call completion handler immediately
+        completion_handler(matching)
+
 
 # Mock EventKit constants
 EKEntityTypeEvent = 0
+EKEntityTypeReminder = 1
 EKParticipantStatusUnknown = 0
 EKParticipantStatusPending = 1
 EKParticipantStatusAccepted = 2
@@ -239,3 +357,9 @@ EKAuthorizationStatusNotDetermined = 0
 EKAuthorizationStatusRestricted = 1
 EKAuthorizationStatusDenied = 2
 EKAuthorizationStatusAuthorized = 3
+EKEventAvailabilityBusy = 0
+EKEventAvailabilityFree = 1
+EKReminderPriorityNone = 0
+EKReminderPriorityHigh = 1
+EKReminderPriorityMedium = 5
+EKReminderPriorityLow = 9
